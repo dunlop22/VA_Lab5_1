@@ -5,11 +5,11 @@ import getch
 
 ##Расчет значений функции в точках
 def y_Count(x_):
-    y_ = []
+    y_2 = []
     for i in range(len(x_)):
         x = x_[i]
-        y_.append(eval(func))
-    return y_
+        y_2.append(eval(func))
+    return y_2
 
 def left_pryamoug():
     rez = 0
@@ -40,18 +40,23 @@ def right_pryamoug():
     return rez
 
 
-def trapezoid(y_, h):
-    rez = (y_[0] + y_[len(y_) - 1] ) / 2
+def trapezoid(y_2, h1):
+    rez = (y_2[0] + y_2[len(y_2) - 1] ) / 2
     
-    for i in range (1, (len(y_) -1)):
-        rez = rez + y_[i]
-    rez = rez * h
+    for i in range (1, (len(y_2) -1)):
+        rez = rez + y_2[i]
+    rez = rez * h1
     return rez
 
-def simpson_(x_, y_):
+def simpson_(x_, y_, h):
+
     if len(x_) % 2 == 0: ##нечетное число отрезков, т.к. четное число значений
+        ##изменить количество отрезков
+        h_old = h
+        h = (b - a) / (((b - a) / h_old) + 1)
+        x_ = np.arange(a, b + h, h)
+        print ("\nНовый шаг (т.к. число отрезков изначально нечетное): ", h)
         ##добавить до четного значения отрезков
-        x_ = np.append(x_, x_[len(x_) - 1] + h)
         y_ = y_Count(x_)
     
     rez = y_[0] + y_[len(x_) - 1]
@@ -65,21 +70,6 @@ def simpson_(x_, y_):
     rez = rez * h / 3
     return rez
 
-
-def Rung(x_, h):
-    h_n = h
-    k = 1
-    n = len(y_) - 1
-    ready = False
-    while not ready:
-        ready = True
-        for i in range(n * k - 1):
-            x_1 = [x_[0] + h_n * i, x_[0] + h_n * i + h_n]
-            y_1 = y_Count(x_1)
-            
-    print(h_n, "<-new h")
-    return h_n
-
 print("Введите функцию: Y = ", end = '')
 func = input();
 
@@ -91,9 +81,6 @@ b = float(input())
 
 print("\nВведите шаг: ", end = '')
 h = float(input())
-
-print("\nВведите допустимую погрешность: ", end = '')
-e = float(input())
 
 ##равномерное распределение x с шагом h
 
@@ -120,33 +107,10 @@ print("Метод правых прямоугольников: ", right)
 
 ##метод трапеции
 
-trapezoid = trapezoid(y_, h)
-print("Метод трапеций: ", trapezoid)
+trapezoi1d = trapezoid(y_, h)
+print("Метод трапеций: ", trapezoi1d)
 
 ##метод Симпсона
-simpson_znach = simpson_(x_, y_)
+simpson_znach = simpson_(x_, y_, h)
 print("Метод Симпсона: ", simpson_znach)
 
-
-##метод Рунге
-h_new = h
-k = 1
-n = len(x_ - 1)
-ready = False
-
-while not ready:
-    ready = True
-    for i in range(n * k - 1):
-        x_1 = [x_[0] + h_new * i, x_[0] + h_new * i + h_new]
-        y_1 = y_Count(x_1)
-        if abs(trapezoid(y_1, h_new / 2) - trapezoid(y_1, h_new)) > eps * h_new / (y_[len(x_) - 1] - y_[0]):
-            h_new /= 2
-            k += 1
-            ready = False
-            break
-
-print("Автоматический шаг (метод Рунге: ", h_new)
-
-
-trapezoid_auto = trapezoid(y_, h_new)
-print("Метод трапеций: ", trapezoid_auto)
